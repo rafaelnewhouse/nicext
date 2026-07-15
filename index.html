@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="css/style.css?v=15201">
+    <title>Rotina — Versão 15.2</title>
+</head>
+
+<body>
+    <div class="layout">
+        <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+            <button class="sidebar-close" id="sidebarCloseButton" type="button" aria-label="Fechar menu">✕</button>
+            <div class="logo">R</div>
+
+            <nav>
+                <a href="#hoje" class="active" data-view-link="today">
+                    <span class="icon">⌂</span><span>Hoje</span>
+                </a>
+                <a href="#rotinas" data-view-link="routines">
+                    <span class="icon">▣</span><span>Rotinas</span>
+                </a>
+                <a href="#agenda" data-view-link="agenda">
+                    <span class="icon">◷</span><span>Agenda</span>
+                </a>
+                <a href="#categorias" data-placeholder-link>
+                    <span class="icon">◉</span><span>Categorias</span>
+                </a>
+                <a href="#configuracoes" data-view-link="settings">
+                    <span class="icon">⚙</span><span>Configurações</span>
+                </a>
+            </nav>
+        </aside>
+
+        <button class="sidebar-backdrop" id="sidebarBackdrop" type="button" aria-label="Fechar menu"></button>
+
+        <main>
+            <section class="app-view active" id="todayView" data-view="today">
+                <header class="page-header today-header">
+                    <div class="page-heading">
+                        <button class="mobile-menu-button" id="mobileMenuButton" type="button"
+                            aria-label="Abrir menu">☰</button>
+                        <div>
+                            <p class="eyebrow" id="todayDate"></p>
+                            <h1 id="greetingTitle">Hoje</h1>
+                            <p id="greetingSubtitle">Organize as tarefas que precisam ser realizadas neste dia.</p>
+                        </div>
+                    </div>
+                </header>
+
+                <section class="daily-quote" aria-label="Frase do dia">
+                    <div class="quote-mark">“</div>
+                    <div>
+                        <span class="quote-label">Pensamento do dia</span>
+                        <blockquote id="dailyQuote"></blockquote>
+                        <cite id="dailyQuoteAuthor"></cite>
+                    </div>
+                </section>
+
+                <section class="next-reminder-card" id="nextReminderCard" hidden>
+                    <div class="next-reminder-icon">🔔</div>
+                    <div class="next-reminder-copy">
+                        <span>Próximo lembrete</span>
+                        <strong id="nextReminderTitle">Nenhum lembrete</strong>
+                        <small id="nextReminderTime"></small>
+                    </div>
+                    <button class="ghost" id="openAgendaButton" type="button">Ver agenda</button>
+                </section>
+
+                <section class="today-summary" aria-label="Resumo do dia">
+                    <div class="summary-card">
+                        <span>Total</span>
+                        <strong id="todayTotal">0</strong>
+                        <small>tarefas</small>
+                    </div>
+                    <div class="summary-card">
+                        <span>Concluídas</span>
+                        <strong id="todayCompleted">0</strong>
+                        <small>tarefas</small>
+                    </div>
+                    <div class="summary-card summary-progress-card">
+                        <div>
+                            <span>Progresso</span>
+                            <strong id="todayPercentage">0%</strong>
+                        </div>
+                        <div class="today-progress">
+                            <div id="todayProgressFill"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="task-horizon">
+                    <div class="task-section today-panel">
+                        <div class="today-panel-header">
+                            <div>
+                                <span class="section-kicker">Prioridade imediata</span>
+                                <h2>Minha lista</h2>
+                                <p>As etapas das rotinas e as tarefas avulsas que precisam ser feitas hoje.</p>
+                            </div>
+
+                            <div class="today-actions">
+                                <button class="ghost" id="addRoutineToDayButton" type="button">
+                                    + Adicionar rotina
+                                </button>
+                                <button class="primary" id="addSingleTaskButton" type="button">
+                                    + Nova tarefa
+                                </button>
+                                <button class="ghost reset-day-button" id="resetDayButton" type="button">
+                                    Reiniciar o dia
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="today-list" id="todayList" data-task-list="today"></div>
+
+                        <div class="today-empty" id="todayEmpty">
+                            <div class="empty-icon">✓</div>
+                            <h3>O dia está livre</h3>
+                            <p>Adicione uma rotina pronta ou comece com uma tarefa simples.</p>
+                        </div>
+                    </div>
+
+                    <div class="task-section future-section">
+                        <button class="future-section-header" type="button" data-section-toggle="week"
+                            aria-expanded="true">
+                            <span>
+                                <span class="section-kicker">Próximos dias</span>
+                                <strong>Tarefas da semana</strong>
+                            </span>
+                            <span class="section-count" id="weekCount">0</span>
+                            <span class="section-chevron">⌄</span>
+                        </button>
+
+                        <div class="future-section-content" data-section-content="week">
+                            <div class="today-list" id="weekList" data-task-list="week"></div>
+                            <div class="future-empty" id="weekEmpty">Nenhuma tarefa para esta semana.</div>
+                        </div>
+                    </div>
+
+                    <div class="task-section future-section">
+                        <button class="future-section-header" type="button" data-section-toggle="month"
+                            aria-expanded="true">
+                            <span>
+                                <span class="section-kicker">Planejamento</span>
+                                <strong>Tarefas do mês</strong>
+                            </span>
+                            <span class="section-count" id="monthCount">0</span>
+                            <span class="section-chevron">⌄</span>
+                        </button>
+
+                        <div class="future-section-content" data-section-content="month">
+                            <div class="today-list" id="monthList" data-task-list="month"></div>
+                            <div class="future-empty" id="monthEmpty">Nenhuma tarefa para este mês.</div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+
+            <section class="app-view" id="agendaView" data-view="agenda" hidden>
+                <header class="page-header">
+                    <div class="page-heading">
+                        <button class="mobile-menu-button mobile-menu-secondary" type="button"
+                            aria-label="Abrir menu">☰</button>
+                        <div>
+                            <p class="eyebrow">Compromissos e horários</p>
+                            <h1>Agenda</h1>
+                            <p>Visualize suas tarefas em ordem cronológica.</p>
+                        </div>
+                    </div>
+
+                    <button class="ghost notification-toggle-button" id="enableNotificationsButton" type="button"
+                        aria-pressed="false">
+                        Ativar notificações
+                    </button>
+                </header>
+
+                <section class="agenda-shell">
+                    <div class="agenda-toolbar">
+                        <div>
+                            <h2>Próximos lembretes</h2>
+                            <p>A lista mostra somente tarefas futuras e é atualizada automaticamente.</p>
+                        </div>
+                        <span class="notification-status disabled" id="notificationStatus">Notificações
+                            desativadas</span>
+                    </div>
+
+                    <div class="agenda-list" id="agendaList"></div>
+
+                    <div class="agenda-empty" id="agendaEmpty">
+                        <div class="empty-icon">◷</div>
+                        <h3>Nenhum horário planejado</h3>
+                        <p>Adicione data, horário e lembrete a uma tarefa para vê-la aqui.</p>
+                    </div>
+                </section>
+            </section>
+
+            <section class="app-view" id="routinesView" data-view="routines" hidden>
+                <header class="page-header">
+                    <div class="page-heading">
+                        <button class="mobile-menu-button mobile-menu-secondary" type="button"
+                            aria-label="Abrir menu">☰</button>
+                        <div>
+                            <p class="eyebrow">Biblioteca de modelos</p>
+                            <h1>Rotinas</h1>
+                            <p id="routineCount">1 rotina cadastrada</p>
+                        </div>
+                    </div>
+
+                    <button class="primary new-routine-button" id="newRoutineButton" type="button">
+                        + Nova rotina
+                    </button>
+                </header>
+
+                <section class="routine-carousel" aria-label="Rotinas cadastradas">
+                    <div class="carousel-header">
+                        <div>
+                            <h2>Suas rotinas</h2>
+                            <p>Modelos reutilizáveis para montar a lista do dia.</p>
+                        </div>
+
+                        <div class="carousel-controls" aria-label="Navegação das rotinas">
+                            <span class="carousel-position" id="carouselPosition">1–3 de 3</span>
+                            <button class="carousel-button" id="carouselPrevButton" type="button"
+                                aria-label="Ver rotinas anteriores">←</button>
+                            <button class="carousel-button" id="carouselNextButton" type="button"
+                                aria-label="Ver próximas rotinas">→</button>
+                        </div>
+                    </div>
+
+                    <div class="carousel-viewport" id="routineCarousel">
+                        <div class="grid" id="routineGrid"></div>
+                    </div>
+
+                    <div class="routine-empty" id="routineEmpty" hidden>
+                        <div class="empty-icon">▣</div>
+                        <h3>Nenhuma rotina cadastrada</h3>
+                        <p>Crie uma rotina para reunir etapas que você executa com frequência.</p>
+                    </div>
+                </section>
+            </section>
+
+            <section class="app-view" id="settingsView" data-view="settings" hidden>
+                <header class="page-header">
+                    <div class="page-heading">
+                        <button class="mobile-menu-button mobile-menu-secondary" type="button"
+                            aria-label="Abrir menu">☰</button>
+                        <div>
+                            <p class="eyebrow">Preferências e dados</p>
+                            <h1>Configurações</h1>
+                            <p>Atualize seu nome ou restaure o ROTINA ao estado inicial.</p>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="settings-layout">
+                    <section class="settings-card">
+                        <div class="settings-card-heading">
+                            <span class="settings-icon">👤</span>
+                            <div>
+                                <h2>Perfil</h2>
+                                <p>Este nome é utilizado na saudação da tela Hoje.</p>
+                            </div>
+                        </div>
+                        <form class="settings-form" id="settingsNameForm">
+                            <label for="settingsNameInput">Seu nome</label>
+                            <div class="settings-inline-form">
+                                <input id="settingsNameInput" maxlength="40" autocomplete="name"
+                                    placeholder="Ex.: Rafael">
+                                <button class="primary" type="submit">Salvar nome</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <section class="settings-card danger-zone">
+                        <div class="settings-card-heading">
+                            <span class="settings-icon danger-icon">!</span>
+                            <div>
+                                <h2>Zona de perigo</h2>
+                                <p>Esta ação apaga os dados locais e devolve o aplicativo ao primeiro acesso.</p>
+                            </div>
+                        </div>
+                        <div class="danger-zone-action">
+                            <div>
+                                <strong>Reiniciar completamente o aplicativo</strong>
+                                <p>Tarefas, rotinas, lembretes, nome e preferências serão removidos deste navegador.</p>
+                            </div>
+                            <button class="danger-button" id="resetApplicationButton" type="button">Reiniciar
+                                aplicativo</button>
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="overlay" class="overlay" aria-hidden="true">
+        <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+            <div class="drawer-header">
+                <div class="drawer-heading">
+                    <div class="drawer-icon">📋</div>
+                    <div class="drawer-title">
+                        <h2 id="drawerTitle">Editar rotina</h2>
+                        <p id="drawerSubtitle">Atualize as informações e as etapas.</p>
+                    </div>
+                </div>
+                <button class="icon-button" id="closeDrawerButton" type="button" aria-label="Fechar editor">✕</button>
+            </div>
+
+            <div class="drawer-body">
+                <div class="editor-section">
+                    <div class="editor-label"><label for="routineName">Nome da rotina</label></div>
+                    <input class="routine-name-input" id="routineName" autocomplete="off" placeholder="Ex.: Abertura">
+                    <div class="routine-meta">
+                        <span class="meta-chip" id="routineCategory">Sem categoria</span>
+                        <span class="meta-chip" id="routineUpdated">Última atualização: ainda não salva</span>
+                    </div>
+
+                    <label class="routine-enabled-setting" for="routineEnabled">
+                        <span>
+                            <strong>Adicionar ao reiniciar o dia</strong>
+                            <small>Quando ativada, esta rotina entra automaticamente em Minha lista.</small>
+                        </span>
+                        <span class="switch-control">
+                            <input id="routineEnabled" type="checkbox">
+                            <span class="switch-track"></span>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="editor-section">
+                    <div class="editor-label">
+                        <label>Etapas</label>
+                        <span class="editor-hint">Arraste para reorganizar · horário opcional</span>
+                    </div>
+                    <div class="steps-list" id="steps"></div>
+                    <button class="ghost add-step-button" id="addStepButton" type="button">+ Adicionar etapa</button>
+                </div>
+            </div>
+
+            <div class="drawer-footer">
+                <span class="drawer-shortcut">Esc para fechar · Ctrl + S para salvar</span>
+                <div class="drawer-actions">
+                    <button class="drawer-delete-button" id="deleteRoutineFromDrawerButton" type="button" hidden>Excluir
+                        rotina</button>
+                    <button class="ghost" id="cancelDrawerButton" type="button">Cancelar</button>
+                    <button class="primary" id="saveRoutineButton" type="button">Salvar</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <div class="modal-overlay" id="routinePickerOverlay" aria-hidden="true">
+        <div class="app-modal routine-picker-modal" role="dialog" aria-modal="true"
+            aria-labelledby="routinePickerTitle">
+            <div class="app-modal-header">
+                <div>
+                    <h2 id="routinePickerTitle">Adicionar uma rotina</h2>
+                    <p>Escolha um modelo para incluir todas as etapas na lista de hoje.</p>
+                </div>
+                <button class="icon-button" data-close-modal="routinePickerOverlay" type="button"
+                    aria-label="Fechar">✕</button>
+            </div>
+            <div class="routine-picker-list" id="routinePickerList"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="singleTaskOverlay" aria-hidden="true">
+        <form class="app-modal compact-modal" id="singleTaskForm" role="dialog" aria-modal="true"
+            aria-labelledby="singleTaskTitle">
+            <div class="app-modal-header">
+                <div>
+                    <h2 id="singleTaskTitle">Nova tarefa</h2>
+                    <p id="singleTaskSubtitle">Crie uma tarefa avulsa e defina quando ela deve ser realizada.</p>
+                </div>
+                <button class="icon-button" data-close-modal="singleTaskOverlay" type="button"
+                    aria-label="Fechar">✕</button>
+            </div>
+            <label for="singleTaskInput">Descrição</label>
+            <input id="singleTaskInput" autocomplete="off" placeholder="Ex.: Comprar materiais">
+
+            <fieldset class="period-selector">
+                <legend>Quando?</legend>
+
+                <label class="period-option">
+                    <input type="radio" name="taskPeriod" value="today" checked>
+                    <span>Hoje</span>
+                    <small>Entra em Minha lista</small>
+                </label>
+
+                <label class="period-option">
+                    <input type="radio" name="taskPeriod" value="week">
+                    <span>Esta semana</span>
+                    <small>Para os próximos dias</small>
+                </label>
+
+                <label class="period-option">
+                    <input type="radio" name="taskPeriod" value="month">
+                    <span>Este mês</span>
+                    <small>Para demandas posteriores</small>
+                </label>
+            </fieldset>
+
+            <div class="task-schedule-grid">
+                <div>
+                    <label for="taskDueDate">Data limite <span class="optional-label">(opcional)</span></label>
+                    <input id="taskDueDate" type="date">
+                </div>
+
+                <div>
+                    <label for="taskDueTime">Horário <span class="optional-label">(opcional)</span></label>
+                    <input id="taskDueTime" type="time">
+                </div>
+            </div>
+
+            <label class="reminder-setting" for="taskReminderEnabled">
+                <span>
+                    <strong>Ativar lembrete</strong>
+                    <small>O aviso será exibido enquanto o Rotina estiver aberto.</small>
+                </span>
+                <span class="switch-control">
+                    <input id="taskReminderEnabled" type="checkbox">
+                    <span class="switch-track"></span>
+                </span>
+            </label>
+
+            <div class="reminder-controls" id="reminderControls" hidden>
+                <div>
+                    <label for="taskReminderValue">Antecedência</label>
+                    <input id="taskReminderValue" type="number" min="0" max="999" value="30">
+                </div>
+
+                <div>
+                    <label for="taskReminderUnit">Unidade</label>
+                    <select id="taskReminderUnit">
+                        <option value="minutes">minutos</option>
+                        <option value="hours">horas</option>
+                        <option value="days">dias</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="app-modal-actions">
+                <button class="ghost" data-close-modal="singleTaskOverlay" type="button">Cancelar</button>
+                <button class="primary" id="singleTaskSubmitButton" type="submit">Adicionar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-overlay" id="resetDayOverlay" aria-hidden="true">
+        <div class="app-modal compact-modal" role="dialog" aria-modal="true" aria-labelledby="resetDayTitle">
+            <div class="confirmation-icon">↻</div>
+            <h2 id="resetDayTitle">Reiniciar o dia?</h2>
+            <p>A lista de hoje será apagada. As rotinas salvas continuarão intactas e poderão ser adicionadas novamente.
+            </p>
+            <div class="app-modal-actions">
+                <button class="ghost" data-close-modal="resetDayOverlay" type="button">Cancelar</button>
+                <button class="danger-button" id="confirmResetDayButton" type="button">Reiniciar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal-overlay" id="deleteRoutineOverlay" aria-hidden="true">
+        <div class="app-modal compact-modal" role="dialog" aria-modal="true" aria-labelledby="deleteRoutineTitle">
+            <div class="confirmation-icon danger-confirmation-icon">🗑</div>
+            <h2 id="deleteRoutineTitle">Excluir esta rotina?</h2>
+            <p>A rotina <strong id="deleteRoutineName"></strong> e suas etapas serão removidas permanentemente. As
+                tarefas já adicionadas às listas serão preservadas.</p>
+            <div class="app-modal-actions">
+                <button class="ghost" data-close-modal="deleteRoutineOverlay" type="button">Cancelar</button>
+                <button class="danger-button" id="confirmDeleteRoutineButton" type="button">Excluir rotina</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="resetApplicationOverlay" aria-hidden="true">
+        <div class="app-modal compact-modal" role="dialog" aria-modal="true" aria-labelledby="resetApplicationTitle">
+            <div class="confirmation-icon danger-confirmation-icon">!</div>
+            <h2 id="resetApplicationTitle">Reiniciar completamente o ROTINA?</h2>
+            <p>Todas as tarefas, rotinas, lembretes, configurações e o nome do usuário serão apagados deste navegador.
+                Esta ação não poderá ser desfeita.</p>
+            <label class="danger-acknowledgement" for="resetApplicationAcknowledge">
+                <input id="resetApplicationAcknowledge" type="checkbox">
+                <span>Estou ciente de que todos os dados do ROTINA serão apagados.</span>
+            </label>
+            <div class="app-modal-actions">
+                <button class="ghost" data-close-modal="resetApplicationOverlay" type="button">Cancelar</button>
+                <button class="danger-button" id="confirmResetApplicationButton" type="button" disabled>Apagar todos os
+                    dados</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay onboarding-overlay" id="welcomeOverlay" aria-hidden="true">
+        <form class="app-modal welcome-modal" id="welcomeForm" role="dialog" aria-modal="true"
+            aria-labelledby="welcomeTitle">
+            <div class="welcome-brand">R</div>
+            <span class="quote-label">Bem-vindo ao Rotina</span>
+            <h2 id="welcomeTitle">Como devemos chamar você?</h2>
+            <p>Seu nome será usado apenas para deixar a tela inicial mais pessoal. Ele poderá ser alterado
+                posteriormente na página Configurações.</p>
+            <label for="welcomeName">Seu nome</label>
+            <input id="welcomeName" autocomplete="name" maxlength="40" placeholder="Ex.: Thais">
+            <button class="primary welcome-submit" type="submit">Começar</button>
+        </form>
+    </div>
+
+
+    <footer class="site-footer">
+        <div class="footer-signal" aria-hidden="true"><span></span></div>
+        <div>
+            <strong>Ministério Público Federal – RS</strong>
+            <small>Versão 15.2 · Sistema de organização de rotinas</small>
+        </div>
+    </footer>
+
+
+    <div class="reminder-toast" id="reminderToast" role="alert" aria-live="assertive" hidden>
+        <div class="reminder-toast-icon">🔔</div>
+        <div class="reminder-toast-content">
+            <span>Lembrete</span>
+            <strong id="reminderToastTitle"></strong>
+            <small id="reminderToastMessage"></small>
+        </div>
+        <div class="reminder-toast-actions">
+            <button class="ghost" id="reminderOpenButton" type="button">Abrir</button>
+            <button class="ghost" id="reminderSnoozeButton" type="button">Adiar 10 min</button>
+            <button class="icon-button" id="reminderDismissButton" type="button" aria-label="Dispensar">✕</button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite">Alterações salvas</div>
+    <script src="js/app.js?v=15201"></script>
+</body>
+
+</html>
